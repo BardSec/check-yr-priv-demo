@@ -20,6 +20,7 @@ services:
       - "8000"
     environment:
       - REDIS_URL=redis://redis:6379/0
+      - APP_BASE_URL=https://priv.bardsec.com
     depends_on:
       - redis
     restart: unless-stopped
