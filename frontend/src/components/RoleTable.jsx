@@ -1,7 +1,57 @@
 import { useState } from "react";
-import { ChevronDown, ChevronRight, Search, Users } from "lucide-react";
+import { ChevronDown, ChevronRight, Download, Search, Users } from "lucide-react";
 import { AssignmentTypeBadge, CABadge, HighPrivBadge, MFABadge, PermanentBadge } from "./Badges";
 import clsx from "clsx";
+
+function exportCsv(roles) {
+  const headers = [
+    "Role",
+    "High Privilege",
+    "CA Protected",
+    "MFA Required",
+    "Principal",
+    "UPN",
+    "Principal Type",
+    "Assignment Type",
+    "Member Type",
+    "Permanent",
+    "Start Date",
+    "End Date",
+  ];
+
+  const escape = (v) => {
+    const s = v == null ? "" : String(v);
+    return s.includes(",") || s.includes('"') || s.includes("\n")
+      ? `"${s.replace(/"/g, '""')}"`
+      : s;
+  };
+
+  const rows = roles.flatMap((role) =>
+    role.assignments.map((a) => [
+      role.roleName,
+      role.isHighPrivilege ? "Yes" : "No",
+      role.caProtected ? "Yes" : "No",
+      role.mfaRequired ? "Yes" : "No",
+      a.principalName,
+      a.principalUpn ?? "",
+      a.principalType,
+      a.assignmentType,
+      a.memberType ?? "Direct",
+      a.isPermanent ? "Yes" : "No",
+      a.startDateTime ? new Date(a.startDateTime).toLocaleDateString() : "",
+      a.endDateTime ? new Date(a.endDateTime).toLocaleDateString() : "",
+    ])
+  );
+
+  const csv = [headers, ...rows].map((r) => r.map(escape).join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `role-assignments-${new Date().toISOString().slice(0, 10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 function AssignmentRow({ a }) {
   return (
@@ -118,6 +168,14 @@ export function RoleTable({ roles }) {
             </button>
           ))}
         </div>
+        <button
+          onClick={() => exportCsv(filtered)}
+          className="btn-ghost text-xs ml-auto"
+          title="Export visible rows to CSV"
+        >
+          <Download className="w-3.5 h-3.5" />
+          Export CSV
+        </button>
       </div>
 
       <div className="overflow-x-auto">
