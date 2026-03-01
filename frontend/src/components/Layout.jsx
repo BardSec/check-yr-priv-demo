@@ -3,6 +3,18 @@ import { FlaskConical, LogOut, Shield } from "lucide-react";
 export function Layout({ user, onLogout, children }) {
   return (
     <div className="min-h-screen flex flex-col">
+      <div className="bg-amber-950 border-b border-amber-800 text-amber-300 text-sm text-center py-2 px-4">
+        <span className="font-medium">Demo Mode</span>
+        {" — No login required. All users share this instance. "}
+        <a
+          href="https://github.com/BardSec/check-yr-priv"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline font-semibold hover:text-amber-100 transition-colors whitespace-nowrap"
+        >
+          Get the Full Version →
+        </a>
+      </div>
       <header className="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
