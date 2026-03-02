@@ -9,4 +9,10 @@ export default defineConfig({
       "/auth": "http://backend:8000",
     },
   },
+  build: {
+    target: "esnext",
+    rollupOptions: {
+      maxParallelFileOps: 3,
+    },
+  },
 });
