@@ -3,7 +3,9 @@ FROM node:20-slim AS build
 WORKDIR /app
 
 COPY package.json ./
-RUN npm install
+RUN npm install && \
+    rm -rf node_modules/@rollup/rollup-linux-x64-musl \
+           node_modules/@rollup/rollup-linux-arm64-musl
 
 COPY . .
 RUN NODE_OPTIONS=--max-old-space-size=512 npm run build
