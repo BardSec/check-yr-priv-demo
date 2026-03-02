@@ -7,14 +7,20 @@ export function useAuth() {
   useEffect(() => {
     api.me()
       .then((data) => {
-        if (data) setState({ loading: false, authenticated: data.authenticated, user: data.user });
+        if (data && data.authenticated) {
+          setState({ loading: false, authenticated: true, user: data.user });
+        } else {
+          window.location.href = "/auth/login";
+        }
       })
-      .catch(() => setState({ loading: false, authenticated: false, user: null }));
+      .catch(() => {
+        window.location.href = "/auth/login";
+      });
   }, []);
 
   const logout = async () => {
     await api.logout();
-    setState({ loading: false, authenticated: false, user: null });
+    window.location.href = "/auth/login";
   };
 
   return { ...state, logout };
